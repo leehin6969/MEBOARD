@@ -15,10 +15,10 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-    <ClerkProvider>
+    <ClerkProvider >
         <html lang="en">
             <body className={`${inter.className} bg-dark-1`}>
-                <div className="w-full felx justify-center items-center min-h-screen">
+                <div className="w-full flex justify-center items-center min-h-screen">
                     {children}
                 </div>
             </body>
