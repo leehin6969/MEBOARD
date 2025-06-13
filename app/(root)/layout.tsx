@@ -10,7 +10,7 @@ import Bottombar from '@/components/shared/Bottombar'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata = { 
+export const metadata = {
   title: "MEBOARD", /* app name */
   decription: "A nextjs 13 meta threads application"
 }
@@ -25,7 +25,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={inter.className}>
           <Topbar />
-          
+
           <main className="flex flex-row">
             <LeftSidebar />
 
@@ -40,7 +40,7 @@ export default function RootLayout({
           </main>
 
           <Bottombar />
-          </body>
+        </body>
       </html>
     </ClerkProvider>
   )

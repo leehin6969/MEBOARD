@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { memo } from "react";
 
 import { sidebarLinks } from "@/constants";
 
-function Bottombar() {
+const Bottombar = memo(() => {
   const pathname = usePathname();
 
   return (
@@ -22,6 +23,7 @@ function Bottombar() {
               href={link.route}
               key={link.label}
               className={`bottombar_link ${isActive && "bg-primary-500"}`}
+              prefetch={true}
             >
               <Image
                 src={link.imgURL}
@@ -29,6 +31,7 @@ function Bottombar() {
                 width={16}
                 height={16}
                 className='object-contain'
+                priority={isActive}
               />
 
               <p className='text-subtle-medium text-light-1 max-sm:hidden'>
@@ -40,6 +43,8 @@ function Bottombar() {
       </div>
     </section>
   );
-}
+});
+
+Bottombar.displayName = 'Bottombar';
 
 export default Bottombar;

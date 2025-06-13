@@ -4,10 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { SignOutButton, SignedIn, useAuth } from "@clerk/nextjs";
+import { memo } from "react";
 
 import { sidebarLinks } from "@/constants";
 
-const LeftSidebar = () => {
+const LeftSidebar = memo(() => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -28,12 +29,14 @@ const LeftSidebar = () => {
               href={link.route}
               key={link.label}
               className={`leftsidebar_link ${isActive && "bg-primary-500 "}`}
+              prefetch={true}
             >
               <Image
                 src={link.imgURL}
                 alt={link.label}
                 width={24}
                 height={24}
+                priority={isActive}
               />
 
               <p className='text-light-1 max-lg:hidden'>{link.label}</p>
@@ -44,8 +47,8 @@ const LeftSidebar = () => {
 
       <div className='mt-10 px-6'>
         <SignedIn>
-          <SignOutButton signOutCallback={() => router.push("/sign-in")}>
-            <div className='flex cursor-pointer gap-4 p-4'>
+          <SignOutButton>
+            <div className='flex cursor-pointer gap-4 p-4' onClick={() => router.push("/sign-in")}>
               <Image
                 src='/assets/logout.svg'
                 alt='logout'
@@ -60,6 +63,8 @@ const LeftSidebar = () => {
       </div>
     </section>
   );
-};
+});
+
+LeftSidebar.displayName = 'LeftSidebar';
 
 export default LeftSidebar;

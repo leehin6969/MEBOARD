@@ -1,34 +1,34 @@
 import { redirect } from "next/navigation";
-import { currentUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import { fetchUser, getActivity } from "@/lib/actions/user.actions";
 import Link from "next/link";
 import Image from "next/image";
 
 async function Page({
-  searchParams,
+    searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+    searchParams: { [key: string]: string | undefined };
 }) {
-  const user = await currentUser();
-  if (!user) return null;
+    const user = await currentUser();
+    if (!user) return null;
 
-  const userInfo = await fetchUser(user.id);
-  if (!userInfo?.onboarded) redirect("/onboarding");
+    const userInfo = await fetchUser(user.id);
+    if (!userInfo?.onboarded) redirect("/onboarding");
 
-  //getActivity
-  const activity = await getActivity(userInfo._id);
+    //getActivity
+    const activity = await getActivity(userInfo._id);
 
     return (
         <section>
             <h1 className="head-text mb-10">Activity</h1>
-            
+
             <section className="mt-10 flex flex-col gap-5">
-                {activity.length > 0 ?(
+                {activity.length > 0 ? (
                     <>
                         {activity.map((activity) => (
                             <Link key={activity._id} href={`/thread/${activity.parentId}`}>
                                 <article className='activity-card'>
-                                    <Image 
+                                    <Image
                                         src={activity.author.image}
                                         alt="Profile Picture"
                                         width={20}
@@ -45,7 +45,7 @@ async function Page({
                             </Link>
                         ))}
                     </>
-                ): <p className="!text-base-regular text-light-3">No Activity yet</p>}
+                ) : <p className="!text-base-regular text-light-3">No Activity yet</p>}
             </section>
         </section>
     )
