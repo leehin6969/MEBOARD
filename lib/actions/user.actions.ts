@@ -11,13 +11,27 @@ import { connectToDB } from "../mongoose";
 
 export async function fetchUser(userId: string) {
   try {
+    console.log("fetchUser - Looking for user with ID:", userId);
     connectToDB();
 
-    return await User.findOne({ id: userId }).populate({
+    const user = await User.findOne({ id: userId }).populate({
       path: "communities",
       model: Community,
     });
+
+    console.log("fetchUser - Found user:", user ? "YES" : "NO");
+    if (user) {
+      console.log("fetchUser - User details:", {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        onboarded: user.onboarded
+      });
+    }
+
+    return user;
   } catch (error: any) {
+    console.error("fetchUser - Error:", error.message);
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
 }

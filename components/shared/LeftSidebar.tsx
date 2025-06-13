@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { SignOutButton, SignedIn, useAuth } from "@clerk/nextjs";
+import { SignOutButton, SignedIn, useUser } from "@clerk/nextjs";
 import { memo } from "react";
 
 import { sidebarLinks } from "@/constants";
@@ -11,8 +11,30 @@ import { sidebarLinks } from "@/constants";
 const LeftSidebar = memo(() => {
   const router = useRouter();
   const pathname = usePathname();
+  const { user, isLoaded } = useUser();
 
-  const { userId } = useAuth();
+  // Debug logging
+  console.log("LeftSidebar - User state:", {
+    userId: user?.id,
+    isLoaded,
+    userExists: !!user
+  });
+
+  // Don't render the navigation until auth is loaded
+  if (!isLoaded) {
+    return (
+      <section className='custom-scrollbar leftsidebar'>
+        <div className='flex w-full flex-1 flex-col gap-6 px-6'>
+          {sidebarLinks.map((link) => (
+            <div key={link.label} className="leftsidebar_link animate-pulse">
+              <div className="w-6 h-6 bg-gray-300 rounded"></div>
+              <div className="w-20 h-4 bg-gray-300 rounded max-lg:hidden"></div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className='custom-scrollbar leftsidebar'>
@@ -22,11 +44,17 @@ const LeftSidebar = memo(() => {
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
 
-          if (link.route === "/profile") link.route = `${link.route}/${userId}`;
+          // Create a copy of the link to avoid mutating the original
+          let linkRoute = link.route;
+
+          // Only modify the profile route if we have a valid user ID
+          if (link.route === "/profile" && user?.id) {
+            linkRoute = `${link.route}/${user.id}`;
+          }
 
           return (
             <Link
-              href={link.route}
+              href={linkRoute}
               key={link.label}
               className={`leftsidebar_link ${isActive && "bg-primary-500 "}`}
               prefetch={true}

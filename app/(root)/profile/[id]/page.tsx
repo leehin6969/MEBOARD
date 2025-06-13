@@ -19,7 +19,19 @@ async function Page({ params }: { params: Promise<{ id: string }> }) {
 
     const userInfo = await fetchUser(id);
 
-    // Better error handling for user not found
+    // If it's the current user and they haven't completed onboarding, redirect to onboarding
+    if (id === user.id && !userInfo) {
+        console.log("Profile page - Current user not found in database, redirecting to onboarding");
+        redirect("/onboarding");
+    }
+
+    // If it's the current user and they exist but haven't completed onboarding
+    if (id === user.id && userInfo && !userInfo.onboarded) {
+        console.log("Profile page - Current user exists but not onboarded, redirecting to onboarding");
+        redirect("/onboarding");
+    }
+
+    // If trying to view another user's profile and they don't exist
     if (!userInfo) {
         console.log("Profile page - User not found in database for ID:", id);
         return (
@@ -32,7 +44,17 @@ async function Page({ params }: { params: Promise<{ id: string }> }) {
         );
     }
 
-    if (!userInfo?.onboarded) redirect("/onboarding");
+    // If viewing another user who exists but hasn't completed onboarding
+    if (!userInfo.onboarded) {
+        return (
+            <div className="flex flex-col items-center justify-center h-64">
+                <h1 className="text-heading2-bold text-light-1 mb-4">Profile Not Available</h1>
+                <p className="text-base-regular text-light-3">
+                    This user hasn't completed their profile setup yet.
+                </p>
+            </div>
+        );
+    }
 
     return (
         <section>
