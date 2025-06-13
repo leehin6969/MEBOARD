@@ -3,12 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import { memo } from "react";
 
 import { sidebarLinks } from "@/constants";
 
 const Bottombar = memo(() => {
   const pathname = usePathname();
+  const { userId } = useAuth();
 
   return (
     <section className='bottombar'>
@@ -17,6 +19,8 @@ const Bottombar = memo(() => {
           const isActive =
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
+
+          if (link.route === "/profile") link.route = `${link.route}/${userId}`;
 
           return (
             <Link

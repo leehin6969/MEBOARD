@@ -13,7 +13,25 @@ async function Page({ params }: { params: Promise<{ id: string }> }) {
 
     const { id } = await params;
 
+    // Add debugging
+    console.log("Profile page - ID from params:", id);
+    console.log("Profile page - Current user ID:", user.id);
+
     const userInfo = await fetchUser(id);
+
+    // Better error handling for user not found
+    if (!userInfo) {
+        console.log("Profile page - User not found in database for ID:", id);
+        return (
+            <div className="flex flex-col items-center justify-center h-64">
+                <h1 className="text-heading2-bold text-light-1 mb-4">User Not Found</h1>
+                <p className="text-base-regular text-light-3">
+                    The user profile you're looking for doesn't exist or hasn't completed onboarding.
+                </p>
+            </div>
+        );
+    }
+
     if (!userInfo?.onboarded) redirect("/onboarding");
 
     return (
