@@ -11,7 +11,7 @@ import { fetchCommunities } from "@/lib/actions/community.actions";
 async function Page({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const user = await currentUser();
   if (!user) return null;
@@ -19,9 +19,11 @@ async function Page({
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  const { q: searchString, page } = await searchParams;
+
   const result = await fetchCommunities({
-    searchString: searchParams.q,
-    pageNumber: searchParams?.page ? +searchParams.page : 1,
+    searchString: searchString,
+    pageNumber: page ? +page : 1,
     pageSize: 25,
   });
 
@@ -55,7 +57,7 @@ async function Page({
 
       <Pagination
         path='communities'
-        pageNumber={searchParams?.page ? +searchParams.page : 1}
+        pageNumber={page ? +page : 1}
         isNext={result.isNext}
       />
     </>

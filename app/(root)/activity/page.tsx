@@ -7,7 +7,7 @@ import Image from "next/image";
 async function Page({
     searchParams,
 }: {
-    searchParams: { [key: string]: string | undefined };
+    searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
     const user = await currentUser();
     if (!user) return null;

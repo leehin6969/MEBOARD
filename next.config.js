@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: true,
-    serverComponentsExternalPackages: ["mongoose"],
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
   },
+  serverExternalPackages: ["mongoose"],
   eslint: {
     ignoreDuringBuilds: true,
   },
